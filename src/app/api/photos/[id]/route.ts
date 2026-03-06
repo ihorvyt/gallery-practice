@@ -3,7 +3,7 @@ import { getUserFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 interface Params {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function PUT(request: Request, { params }: Params) {
@@ -12,7 +12,8 @@ export async function PUT(request: Request, { params }: Params) {
     return NextResponse.json({ error: 'Неавторизовано' }, { status: 401 });
   }
 
-  const photoId = Number(params.id);
+  const { id } = await params;
+  const photoId = Number(id);
   if (!photoId) {
     return NextResponse.json({ error: 'Невірний ID' }, { status: 400 });
   }
@@ -38,7 +39,8 @@ export async function DELETE(_request: Request, { params }: Params) {
     return NextResponse.json({ error: 'Неавторизовано' }, { status: 401 });
   }
 
-  const photoId = Number(params.id);
+  const { id } = await params;
+  const photoId = Number(id);
   if (!photoId) {
     return NextResponse.json({ error: 'Невірний ID' }, { status: 400 });
   }
